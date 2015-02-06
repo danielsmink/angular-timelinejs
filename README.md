@@ -38,10 +38,11 @@ then simply include the following somewhere into your HTML (i.e. view).
                    start-at-slide="0"
                    hash-bookmark="false"
                    lang="en"
-                   debug="false"></pipp-timeline-j-s>
+                   debug="false"
+                   state="timelineState"></pipp-timeline-j-s>
 ```
 
-and in a controller you would have your data which you can pull from services and manipulate as you wish.
+and in a controller you would have your data and initial state which you can pull from services and manipulate as you wish. Set the index in state to anything else but 0 to start at that record.
 
 ```javascript
 $scope.timelineData = {
@@ -83,6 +84,10 @@ $scope.timelineData = {
     ]
   }
 };
+
+$scope.timelineState = {
+  index: 0
+}
 ```
 
 Examples
