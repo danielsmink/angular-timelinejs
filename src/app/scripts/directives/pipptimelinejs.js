@@ -91,7 +91,9 @@ angular.module('pippTimelineDirectives', [])
       if (scope.thumbnailUrl) timeline_conf["thumbnail_url"] = scope.thumbnailUrl;
 
       (scope.debug==='true') ? VMM.debug = true : VMM.debug = false;
-      console.log("Timeline Configuration: ", timeline_conf);
+      if(VMM.debug) {
+        console.log("Timeline Configuration: ", timeline_conf);
+      }
 
       /////////////////////////////
       // Custom Timeline Config  //
@@ -100,7 +102,9 @@ angular.module('pippTimelineDirectives', [])
       scope.$watch('state.modal_open', function (newVal) {
         // When timeline is loaded check if a CRUD modal is open for editing
         if (timeline) {
-          console.log("Modal open for editing: ", newVal);
+          if(VMM.debug) {
+            console.log("Modal open for editing: ", newVal);
+          }
           timeline.set_config_item("modal_open", newVal);
         }
       });
@@ -112,13 +116,19 @@ angular.module('pippTimelineDirectives', [])
       var render = function (s) {
         // Source arrived but not yet init'ed VMM.Timelines
         if (s && !timeline) {
-          console.log("Initializing timeline with: ", timeline_conf);
+          if(VMM.debug) {
+            console.log("Initializing timeline with: ", timeline_conf);
+          }
           timeline_conf["source"] = s;
           timeline = new VMM.Timeline('pipp-timeline', width, height);
           timeline.init(timeline_conf);
-          console.log("VMM.Timeline object: ", timeline);
+          if(VMM.debug) {
+            console.log("VMM.Timeline object: ", timeline);
+          }
         } else if (s && timeline) { // VMM.Timeline init'ed; ready to only reload
-          console.log("Reloading timeline");
+          if(VMM.debug) {
+            console.log("Reloading timeline");
+          }
           // I think it may be much easier to force a slide on reload
           // Essentially, now the required directive config would contain to bindings
           // <pipp-timeline-j-s source="data" slide="index"></pipp-timeline-j-s>
@@ -135,10 +145,14 @@ angular.module('pippTimelineDirectives', [])
       scope.$watch('source', function (newSource, oldSource) {
         // Source not ready (maybe waiting on service or other async call)
         if (!newSource) {
-          console.log("Waiting for source data");
+          if(VMM.debug) {
+            console.log("Waiting for source data");
+          }
           return;
         } else if (newSource.timeline.date.length === 0) {
-          console.log("Source defined but no stories in it");
+          if(VMM.debug) {
+            console.log("Source defined but no stories in it");
+          }
           return;
         }
         newSource = format(newSource, formatStory);
@@ -151,7 +165,9 @@ angular.module('pippTimelineDirectives', [])
       // When changing the current slide *from the controller* without changing the
       // source data.
       scope.$watch('state.index', function (newState, oldState) {
-        console.log("Detected state change: ", newState);
+        if(VMM.debug) {
+          console.log("Detected state change: ", newState);
+        }
         if (timeline) {
           timeline.set_slide(newState);
           
@@ -161,11 +177,14 @@ angular.module('pippTimelineDirectives', [])
       /////////////////////////
       // Events of Interest  //
       /////////////////////////
-
-      console.log("Listening to events");
+      if(VMM.debug) {
+        console.log("Listening to events");
+      }
 
       var updateState = function(e, callback) {
-        console.log("Timeline navigation event: ", e);
+        if(VMM.debug) {
+          console.log("Timeline navigation event: ", e);
+        }
         // For some reason I have not investigated when using
         // 'keydown' events the current_slide is not yet
         // updated in the TimelineJS config. This is why
@@ -175,7 +194,9 @@ angular.module('pippTimelineDirectives', [])
         // with 'click' events.
         return $timeout(function(){
           scope.state.index = timeline.get_config().current_slide;
-          console.log("Index updated: ", scope.state.index);
+          if(VMM.debug) {
+            console.log("Index updated: ", scope.state.index);
+          }
         });
       };
 
@@ -292,7 +313,9 @@ angular.module('pippTimelineDirectives', [])
       var format = function(source, fn) {
         var stories = source.timeline.date;
         source.timeline.date = stories.map(fn);
-        console.log("Source with formatted tags: ", source);
+        if(VMM.debug) {
+          console.log("Source with formatted tags: ", source);
+        }
         return source;
       };
 
